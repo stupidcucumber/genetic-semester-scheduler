@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import yaml
 from prettytable import PrettyTable
 
@@ -11,7 +13,14 @@ class GeneticSchedule:
         self.parameters = parameters
 
     @classmethod
-    def from_yaml(cls, file_path: str) -> "GeneticSchedule":
+    def from_yaml(cls, file_path: str) -> GeneticSchedule:
+        """Loads YAML file configuration.
+
+        Parameters
+        ----------
+        file_path : str
+            Path to the yaml containing config.
+        """
         try:
             with open(file_path, "r") as file:
                 data = yaml.load(file, Loader=yaml.FullLoader)
@@ -45,15 +54,18 @@ class GeneticSchedule:
             print(f"Error: {e}")
 
     def generate_population(self, size: int) -> list[Schedule]:
-        """
-        Generate a population of 'n' schedules using the create_basic_schedule method
+        """Generate a population of 'n' schedules using the create_basic_schedule method
         from the Schedule class.
 
-        Args:
-            n (int): The number of schedules to generate.
+        Parameters
+        ----------
+        size : int
+            The number of schedules to generate.
 
-        Returns:
-            list[Schedule]: A list of generated schedules.
+        Returns
+        -------
+        list[Schedule]
+            A list of generated schedules.
         """
         population = []
 
@@ -64,12 +76,17 @@ class GeneticSchedule:
         return population
 
     def evolve(self, evolution_params: EvolutionParameters) -> Schedule:
-        """
-        Evolves a population of schedules to optimize fitness.
+        """Evolves a population of schedules to optimize fitness.
 
-        :param evolution_params: EvolutionParameters containing all parameters
-        needed for evolution
-        :return: Schedule with the best fitness after the evolution process
+        Parameters
+        ----------
+        evolution_params : EvolutionParameters
+            Parameters needed for evolution
+
+        Returns
+        -------
+        Schedule
+            The best fitness after the evolution process.
         """
         population = [
             Schedule.create_basic_schedule(self.parameters)
