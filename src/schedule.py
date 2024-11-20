@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import random
 
 from src.parameters import EvolutionParameters, Parameters
@@ -5,7 +7,7 @@ from src.types import Group, Hall, Lecturer, Slot, TimeSlot
 
 
 class Schedule:
-    def __init__(self, parameters: Parameters):
+    def __init__(self, parameters: Parameters) -> None:
         self.grid: list[Slot] = []
         self.parameters = parameters
 
@@ -159,12 +161,13 @@ class Schedule:
                 self._mutate_timeslot(slot=slot)
 
     def count_total_windows(self) -> int:
-        """
-        Calculates the total number of "windows" (gaps) in the schedule across
+        """Calculates the total number of "windows" (gaps) in the schedule across
         all groups.
 
-        Returns:
-            int: The total count of windows across all groups.
+        Returns
+        -------
+        int
+            The total count of windows across all groups.
         """
         total_windows = 0
 
@@ -194,12 +197,13 @@ class Schedule:
         return total_windows
 
     def count_total_lecturer_windows(self) -> int:
-        """
-        Calculates the total number of "windows" (gaps) in the schedule
+        """Calculates the total number of "windows" (gaps) in the schedule
         across all lecturers.
 
-        Returns:
-            int: The total count of windows across all lecturers.
+        Returns
+        -------
+        int
+            The total count of windows across all lecturers.
         """
         total_windows = 0
 
@@ -229,12 +233,13 @@ class Schedule:
         return total_windows
 
     def count_total_non_profile_slots(self) -> int:
-        """
-        Calculates the total number of slots across all lecturers where they are
+        """Calculates the total number of slots across all lecturers where they are
         teaching a non-profile subject.
 
-        Returns:
-            int: The total count of non-profile slots across all lecturers.
+        Returns
+        -------
+        int
+            The total count of non-profile slots across all lecturers.
         """
         total_non_profile_slots = 0
 
@@ -246,12 +251,13 @@ class Schedule:
         return total_non_profile_slots
 
     def count_capacity_overflows(self) -> float:
-        """
-        Calculates the total capacity overflow penalty for halls where the group size
+        """Calculates the total capacity overflow penalty for halls where the group size
         exceeds hall capacity.
 
-        Returns:
-            float: The sum of overflow percentages for all cases where a hall's
+        Returns
+        -------
+        float
+            The sum of overflow percentages for all cases where a hall's
             capacity is exceeded.
         """
         total_overflow_penalty = 0.0
@@ -267,21 +273,21 @@ class Schedule:
         return total_overflow_penalty
 
     @classmethod
-    def create_basic_schedule(cls, parameters: Parameters) -> "Schedule":
-        """
-        Creates a simple schedule that satisfies the hard constraints:
+    def create_basic_schedule(cls, parameters: Parameters) -> Schedule:
+        """Creates a simple schedule that satisfies the hard constraints:
         - One lecturer can conduct one lesson at a time in one hall with one group.
         - One group can have one lesson at a time.
         - One hall can contain only one lesson at a time.
 
-        This method does not aim for optimization, but creates a valid initial schedule.
-        It returns a new Schedule object with the grid populated.
+        Parameters
+        ----------
+        parameters : Parameters
+            The parameters required to generate the schedule.
 
-        Args:
-            parameters (Parameters): The parameters required to generate the schedule.
-
-        Returns:
-            Schedule: A new Schedule object with the grid populated.
+        Returns
+        -------
+        Schedule
+            A new Schedule object with the grid populated.
         """
 
         schedule = cls(parameters)
