@@ -13,110 +13,150 @@ class Schedule:
         return "\n".join([str(slot) for slot in self.grid])
 
     def get_available_lecturers(self, time_slot: TimeSlot) -> list[Lecturer]:
-        """
-        Returns a list of available lecturers for the given time slot.
+        """Extract available lecturers for a specific timeslot.
+
+        Parameters
+        ----------
+        time_slot : TimeSlot
+            Time at which lecturer must not have lectures.
+
+        Returns
+        -------
+        list[Lecturer]
         """
         scheduled_slots = [slot for slot in self.grid if slot.time_slot == time_slot]
         scheduled_lecturers = {
             slot.lecturer for slot in scheduled_slots if slot.lecturer
         }
-        available_lecturers = [
+        return [
             lecturer
             for lecturer in self.parameters.lecturers
             if lecturer not in scheduled_lecturers
         ]
-        return available_lecturers
 
     def get_available_halls(self, time_slot: TimeSlot) -> list[Hall]:
-        """
-        Returns a list of available halls for the given time slot.
+        """Extract available halls for a specific timeslot.
+
+        Parameters
+        ----------
+        time_slot : TimeSlot
+            Time at which hall must not have group.
+
+        Returns
+        -------
+        list[Hall]
         """
         scheduled_slots = [slot for slot in self.grid if slot.time_slot == time_slot]
         scheduled_halls = {slot.hall for slot in scheduled_slots if slot.hall}
-        available_halls = [
-            hall for hall in self.parameters.halls if hall not in scheduled_halls
-        ]
-        return available_halls
+        return [hall for hall in self.parameters.halls if hall not in scheduled_halls]
 
-    def get_available_time_slots_with_hall_and_lecturer_and_group(
+    def get_available_time_slots(
         self, hall: Hall, lecturer: Lecturer, group: Group
     ) -> list[TimeSlot]:
-        """
-        Returns a list of available time slots where the given hall and
-        lecturer are both free.
+        """Extract available time slots for a hall, lecturer or
+        a group.
+
+        Parameters
+        ----------
+        hall : Hall
+        lecturer : Lecturer
+        group : Group
+
+        Returns
+        -------
+        list[TimeSlot]
         """
         scheduled_slots = [
             slot
             for slot in self.grid
             if slot.hall == hall or slot.lecturer == lecturer or slot.group == group
         ]
-
         occupied_time_slots = {slot.time_slot for slot in scheduled_slots}
-        available_time_slots = [
+        return [
             time_slot
             for time_slot in self.parameters.time_slots
             if time_slot not in occupied_time_slots
         ]
-        return available_time_slots
 
-    def mutate(self, evolution_params: EvolutionParameters):
-        """
-        Mutates the schedule with a given probability `mut_prob`.
-        For each slot in the grid:
-        - With probability `mut_prob`, independently apply one mutation (change hall,
-        change lecturer, or change time slot)
-        Each mutation has its own probability: `hall_prob`, `lecturer_prob`,
-        `time_slot_prob`.
-        """
+    def _mutate_hall(self, slot: Slot) -> None:
+        """Makes in-place mutation of slot's property `hall`.
 
-        for i, slot in enumerate(self.grid):
+        Parameters
+        ----------
+        slot : Slot
+            Slot that needs to be mutated.
+
+        Notes
+        -----
+        If there is no available halls no mutation is being performed.
+        """
+        available_halls = self.get_available_halls(slot.time_slot)
+
+        if available_halls:
+            slot.hall = random.choice(available_halls)
+
+    def _mutate_lecturer(self, slot: Slot) -> None:
+        """Makes in-place mutation of slot's property `lecturer`.
+
+        Parameters
+        ----------
+        slot : Slot
+            Slot that needs to be mutated.
+
+        Notes
+        -----
+        If there is no available lecturers no mutation is being performed.
+        """
+        available_lecturers = self.get_available_lecturers(slot.time_slot)
+
+        if available_lecturers:
+            slot.lecturer = random.choice(available_lecturers)
+
+    def _mutate_timeslot(self, slot: Slot) -> None:
+        """Makes in-place mutation of slot's property `time_slot`.
+
+        Parameters
+        ----------
+        slot : Slot
+            Slot that needs to be mutated.
+
+        Notes
+        -----
+        If there is no available time slots no mutation is being performed.
+        """
+        available_time_slots = self.get_available_time_slots(
+            slot.hall, slot.lecturer, slot.group
+        )
+
+        if available_time_slots:
+            slot.time_slot = random.choice(available_time_slots)
+
+    def mutate(self, evolution_params: EvolutionParameters) -> None:
+        """Makes a mutation of the shedule based on provided parameters.
+
+        Parameters
+        ----------
+        evolution_params : EvolutionParameters
+
+        Notes
+        -----
+        With `mut_prob` for each slot in the grid:
+        - With probability `hall_prob` apply mutation `change hall`
+        - With probability `lecturer_prob` apply mutation `change lecturer`
+        - With probability `time_slot_prob` apply mutation `change time slot`
+        """
+        for slot in self.grid:
             if random.random() > evolution_params.mut_prob:
                 continue
 
-            mutated_slot = slot
-
             if random.random() < evolution_params.hall_prob:
-                available_halls = self.get_available_halls(slot.time_slot)
-                if available_halls:
-                    mutated_slot = Slot(
-                        group=slot.group,
-                        subject=slot.subject,
-                        lecturer=slot.lecturer,
-                        hall=random.choice(available_halls),
-                        time_slot=slot.time_slot,
-                    )
-
-                    self.grid[i] = mutated_slot
+                self._mutate_hall(slot=slot)
 
             if random.random() < evolution_params.lecturer_prob:
-                available_lecturers = self.get_available_lecturers(slot.time_slot)
-                if available_lecturers:
-                    mutated_slot = Slot(
-                        group=slot.group,
-                        subject=slot.subject,
-                        lecturer=random.choice(available_lecturers),
-                        hall=mutated_slot.hall,
-                        time_slot=mutated_slot.time_slot,
-                    )
-
-                    self.grid[i] = mutated_slot
+                self._mutate_lecturer(slot=slot)
 
             if random.random() < evolution_params.time_slot_prob:
-                available_time_slots = (
-                    self.get_available_time_slots_with_hall_and_lecturer_and_group(
-                        mutated_slot.hall, mutated_slot.lecturer, slot.group
-                    )
-                )
-                if available_time_slots:
-                    mutated_slot = Slot(
-                        group=slot.group,
-                        subject=slot.subject,
-                        lecturer=mutated_slot.lecturer,
-                        hall=mutated_slot.hall,
-                        time_slot=random.choice(available_time_slots),
-                    )
-
-                    self.grid[i] = mutated_slot
+                self._mutate_timeslot(slot=slot)
 
     def count_total_windows(self) -> int:
         """
