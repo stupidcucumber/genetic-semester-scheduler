@@ -29,16 +29,23 @@ def parse_arguments() -> Namespace:
     return parser.parse_args()
 
 
-def generate_selection_function(elitism_ratio: float = 0.1, tournament_size: int = 3):
-    """
-    Creates a selection function for a population with elitism and tournament
+def generate_selection_function(
+    elitism_ratio: float = 0.1, tournament_size: int = 3
+) -> Callable[[list[Schedule], Callable], list[Schedule]]:
+    """Creates a selection function for a population with elitism and tournament
     selection.
 
-    :param elitism_ratio: The ratio of elite individuals to retain
-    from the population.
-    :param tournament_size: The number of individuals to sample for tournament
-    selection.
-    :return: A function that returns the selected population.
+    Parameters
+    ----------
+    elitism_ratio : float, default=0.1
+        The ratio of elite individuals to retain from the population.
+    tournament_size : int, default=3
+        The number of individuals to sample for tournament selection.
+
+    Returns
+    -------
+    Callable[[list[Schedule], Callable], list[Schedule]]
+        A function that returns the selected population.
     """
 
     def selector(population: list[Schedule], fitness_func: Callable) -> list[Schedule]:
@@ -57,16 +64,18 @@ def generate_selection_function(elitism_ratio: float = 0.1, tournament_size: int
     return selector
 
 
-def create_fittest_selector():
-    """
-    Creates a selection function that selects the fittest individual and replicates it
-    to generate the entire new population.
+def create_fittest_selector() -> Callable[[list[Schedule], Callable], list[Schedule]]:
+    """Creates a selection function that selects the fittest individual and replicates
+    it to generate the entire new population.
 
-    :return: A function that returns a new population containing only copies
-    of the fittest individual.
+    Returns
+    -------
+    Callable[[list[Schedule], Callable], list[Schedule]]
+        A function that returns a new population containing only copies
+        of the fittest individual.
     """
 
-    def selector(population: list[Schedule], fitness_func: callable) -> list[Schedule]:
+    def selector(population: list[Schedule], fitness_func: Callable) -> list[Schedule]:
         population.sort(key=fitness_func, reverse=True)
 
         fittest_individual = population[0]
@@ -86,14 +95,30 @@ def generate_fitness_function(
     non_profile_slot_weight: float,
     capacity_overflow_weight: float,
     distribution_penalty_weight: float = 0,
-):
+) -> Callable[[Schedule], float]:
+    """Generate a function that will calculate the score of a specific
+    schedule based on provided weights.
+
+    Parameters
+    ----------
+    group_window_weight : float
+    lecturer_window_weight : float
+    non_profile_slot_weight : float
+    capacity_overflow_weight : float
+    distribution_penalty_weight : float, default=0
+
+    Returns
+    -------
+    Callable[[Schedule], float]
+        Score function.
+    """
+
     def fitness(schedule: Schedule) -> float:
         total_group_windows = schedule.count_total_windows()
         total_lecturer_windows = schedule.count_total_lecturer_windows()
         total_non_profile_slots = schedule.count_total_non_profile_slots()
         total_capacity_overflow = schedule.count_capacity_overflows()
 
-        # Distribution of lessons across time slots
         time_slot_counts = dict.fromkeys(schedule.parameters.time_slots, 0)
 
         for slot in schedule.grid:
@@ -119,7 +144,7 @@ def generate_fitness_function(
             + distribution_penalty_weight
         )
 
-        return -1 * fitness_score  # Minimize penalties for optimization
+        return -1 * fitness_score
 
     return fitness
 
