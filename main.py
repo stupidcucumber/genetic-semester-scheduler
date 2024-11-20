@@ -4,11 +4,7 @@ from argparse import ArgumentParser, Namespace
 from typing import Callable
 
 from src.genetic import GeneticSchedule
-from src.io.yaml import (
-    save_schedule_to_yaml_hall,
-    save_schedule_to_yaml_lecturer,
-    save_schedule_to_yaml_student,
-)
+from src.io.yaml import save_results
 from src.parameters import EvolutionParameters
 from src.schedule import Schedule
 
@@ -173,9 +169,7 @@ def main(config: str) -> None:
 
     final_schedule = genetic_schedule.evolve(evolution_parameters)
 
-    save_schedule_to_yaml_student(final_schedule, "final_students_schedule.yaml")
-    save_schedule_to_yaml_lecturer(final_schedule, "final_lecturers_schedule.yaml")
-    save_schedule_to_yaml_hall(final_schedule, "final_halls_schedule.yaml")
+    save_results(final_schedule)
 
 
 if __name__ == "__main__":

@@ -100,3 +100,9 @@ def save_schedule_to_yaml_hall(schedule: Schedule, file_path: str) -> None:
 
     with open(file_path, "w") as file:
         yaml.dump(schedule_data, file, default_flow_style=False, allow_unicode=True)
+
+
+def save_results(schedule: Schedule) -> None:
+    save_schedule_to_yaml_student(schedule, "final_students_schedule.yaml")
+    save_schedule_to_yaml_lecturer(schedule, "final_lecturers_schedule.yaml")
+    save_schedule_to_yaml_hall(schedule, "final_halls_schedule.yaml")
