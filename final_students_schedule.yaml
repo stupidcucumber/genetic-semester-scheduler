@@ -1,0 +1,103 @@
+K-1:
+- hall: 4
+  lecturer: Lecturer 1
+  subject: Programming
+  time_slot: 1. Monday, 1
+- hall: 5
+  lecturer: Lecturer 1
+  subject: Programming
+  time_slot: 1. Monday, 2
+- hall: 5
+  lecturer: Lecturer 3
+  subject: Programming
+  time_slot: 1. Monday, 3
+- hall: 5
+  lecturer: Lecturer 1
+  subject: Discrete Math
+  time_slot: 2. Tuesday, 1
+- hall: 4
+  lecturer: Lecturer 3
+  subject: Programming
+  time_slot: 2. Tuesday, 2
+- hall: 5
+  lecturer: Lecturer 1
+  subject: Programming
+  time_slot: 2. Tuesday, 3
+- hall: 5
+  lecturer: Lecturer 1
+  subject: Programming
+  time_slot: 2. Tuesday, 4
+- hall: 5
+  lecturer: Lecturer 3
+  subject: Programming
+  time_slot: 3. Wednesday, 4
+- hall: 5
+  lecturer: Lecturer 3
+  subject: Programming
+  time_slot: 4. Thursday, 2
+- hall: 5
+  lecturer: Lecturer 3
+  subject: Linear Algebra
+  time_slot: 4. Thursday, 3
+- hall: 5
+  lecturer: Lecturer 1
+  subject: Programming
+  time_slot: 4. Thursday, 4
+- hall: 5
+  lecturer: Lecturer 1
+  subject: Programming
+  time_slot: 5. Friday, 2
+K-2:
+- hall: 4
+  lecturer: Lecturer 3
+  subject: Programming
+  time_slot: 1. Monday, 4
+- hall: 4
+  lecturer: Lecturer 3
+  subject: Programming
+  time_slot: 2. Tuesday, 1
+- hall: 5
+  lecturer: Lecturer 1
+  subject: Programming
+  time_slot: 2. Tuesday, 2
+- hall: 4
+  lecturer: Lecturer 3
+  subject: Programming
+  time_slot: 3. Wednesday, 2
+- hall: 5
+  lecturer: Lecturer 3
+  subject: Programming
+  time_slot: 3. Wednesday, 3
+- hall: 4
+  lecturer: Lecturer 1
+  subject: Programming
+  time_slot: 3. Wednesday, 4
+- hall: 4
+  lecturer: Lecturer 1
+  subject: Programming
+  time_slot: 4. Thursday, 2
+- hall: 4
+  lecturer: Lecturer 1
+  subject: Programming
+  time_slot: 4. Thursday, 3
+- hall: 4
+  lecturer: Lecturer 3
+  subject: Programming
+  time_slot: 4. Thursday, 4
+- hall: 5
+  lecturer: Lecturer 1
+  subject: Programming
+  time_slot: 5. Friday, 3
+- hall: 4
+  lecturer: Lecturer 2
+  subject: Linear Algebra
+  time_slot: 5. Friday, 4
+K-3:
+- hall: 2
+  lecturer: Lecturer 1
+  subject: Discrete Math
+  time_slot: 3. Wednesday, 3
+- hall: 2
+  lecturer: Lecturer 2
+  subject: Linear Algebra
+  time_slot: 5. Friday, 3
